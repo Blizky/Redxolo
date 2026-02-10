@@ -1,0 +1,38 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Change this to match your GitHub repo (used by some hosting setups)
+repo: Blizky/Redxolo
+
+# Cloudinary media library (API key is public; do not put your API secret here)
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: dmcq1gb99
+    api_key: 211337939524958
+    upload_preset: redxolo
+
+local_backend: false
+
+collections:
+  - name: "site"
+    label: "Site"
+    files:
+      - name: "posts"
+        label: "Posts"
+        file: "content/posts.json"
+        format: "json"
+        fields:
+          - label: "Posts"
+            name: "posts"
+            widget: "list"
+            summary: "{{fields.date}} — {{fields.highlighted}} — {{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Slug", name: "slug", widget: "string", hint: "Unique id (example: tx-to-al-2026-02-10)" }
+              - { label: "Date", name: "date", widget: "datetime" }
+              - { label: "Highlighted", name: "highlighted", widget: "boolean", default: false }
+              - { label: "Media", name: "media_url", widget: "file", required: false, hint: "Upload/select an image or video" }
+              - { label: "Media Type", name: "media_type", widget: "select", options: ["image", "video"], default: "image" }
+              - { label: "Description", name: "description", widget: "markdown" }

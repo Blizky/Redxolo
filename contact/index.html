@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact • RedXolo</title>
+    <meta name="description" content="Request a pet transport quote." />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script defer src="/assets/site.js"></script>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="container">
+        <div class="nav">
+          <a class="brand" href="/" aria-label="RedXolo home">
+            <span class="logo" aria-hidden="true"></span>
+            <span>RedXolo</span>
+          </a>
+          <nav class="navlinks" aria-label="Site">
+            <a class="pill" href="/services/">Services</a>
+            <a class="pill" href="/about/">About</a>
+            <a class="pill primary" href="/contact/">Contact</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <main class="section">
+      <div class="container">
+        <div class="card">
+          <h3>Request a quote</h3>
+          <p>Share the basics and I’ll reply with availability, pricing, and a simple plan for your pet’s trip.</p>
+
+          <form name="contact" method="POST" data-netlify="true" style="margin-top: 12px;">
+            <input type="hidden" name="form-name" value="contact" />
+
+            <div style="display:grid; gap: 8px; margin: 12px 0;">
+              <label style="font-weight: 900;" for="name">Your name</label>
+              <input id="name" name="name" autocomplete="name" required />
+            </div>
+
+            <div style="display:grid; gap: 8px; margin: 12px 0;">
+              <label style="font-weight: 900;" for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+
+            <div style="display:grid; gap: 8px; margin: 12px 0;">
+              <label style="font-weight: 900;" for="phone">Phone (optional)</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+
+            <div style="display:grid; gap: 8px; margin: 12px 0;">
+              <label style="font-weight: 900;" for="pet">Pet details</label>
+              <textarea id="pet" name="pet" placeholder="Type, breed, weight, temperament, crate/harness preference…" required></textarea>
+            </div>
+
+            <div style="display:grid; gap: 8px; margin: 12px 0;">
+              <label style="font-weight: 900;" for="trip">Trip details</label>
+              <textarea id="trip" name="trip" placeholder="Pickup city/state, drop-off city/state, preferred date/time…" required></textarea>
+            </div>
+
+            <button class="btn primary" type="submit">Send request</button>
+
+            <p style="margin-top: 10px; color: var(--muted); font-weight: 650;">
+              If the form doesn’t work for any reason, include your best contact info and I’ll reach out.
+            </p>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p style="margin:0; color: var(--muted); font-weight: 750;">© <span data-year></span> RedXolo</p>
+      </div>
+    </footer>
+  </body>
+</html>
