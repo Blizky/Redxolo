@@ -5,57 +5,47 @@ backend:
 # Change this to match your GitHub repo (used by some hosting setups)
 repo: Blizky/Redxolo
 
-# Cloudinary media library (API key is public; do not put your API secret here)
-media_library:
-  name: cloudinary
-  config:
-    cloud_name: dmcq1gb99
-    api_key: 211337939524958
-    upload_preset: redxolo
+# Cloudinary unsigned upload config (no Cloudinary login)
+cloudinary:
+  cloud_name: dmcq1gb99
+  upload_preset: redxolo
 
 local_backend: false
 
 collections:
-  - name: "site"
-    label: "Site"
-    files:
-      - name: "posts"
-        label: "Posts"
-        file: "content/posts.json"
-        format: "json"
-        fields:
-          - label: "Posts"
-            name: "posts"
-            widget: "list"
-            summary: "{{fields.date}} — {{fields.highlighted}} — {{fields.tags}} — {{fields.title}}"
-            fields:
-              - label: "ID"
-                name: "id"
-                widget: "hidden"
-                default: "{{now}}"
-              - { label: "Title", name: "title", widget: "string" }
-              - label: "Date"
-                name: "date"
-                widget: "datetime"
-                default: "{{now}}"
-                hint: "Displayed on the website in Central Time (CT). You can edit this for older/newer posts."
-              - { label: "Highlighted", name: "highlighted", widget: "boolean", default: false }
-              - label: "Tags"
-                name: "tags"
-                widget: "select"
-                multiple: true
-                options: ["Dog", "Cat"]
-                required: false
-              - label: "Media (required)"
-                name: "media_url"
-                widget: "file"
-                required: true
-                hint: "Upload/select 1 file. iPhone HEIC is OK (Cloudinary will optimize delivery). Videos should be MP4."
-              - label: "More photos (optional, up to 5)"
-                name: "gallery"
-                widget: "list"
-                required: false
-                max: 5
-                hint: "Optional extra JPG photos (up to 5)."
-                field: { label: "Photo", name: "image", widget: "image" }
-              - { label: "Description", name: "description", widget: "markdown" }
+  - name: "posts"
+    label: "Posts"
+    folder: "content/posts"
+    create: true
+    extension: "json"
+    format: "json"
+    slug: "{{year}}-{{month}}-{{day}}-{{hour}}{{minute}}-{{slug}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - label: "ID"
+        name: "id"
+        widget: "hidden"
+        required: false
+      - { label: "Title", name: "title", widget: "string" }
+      - label: "Date"
+        name: "date"
+        widget: "datetime"
+        default: "{{now}}"
+        hint: "Displayed on the website in Central Time (CT). You can edit this for older/newer posts."
+      - { label: "Highlighted", name: "highlighted", widget: "boolean", default: false }
+      - label: "Tags"
+        name: "tags"
+        widget: "select"
+        multiple: true
+        options: ["Dog", "Cat"]
+        required: false
+      - label: "Media (required)"
+        name: "media_url"
+        widget: "cloudinary_media"
+        resource_type: "auto"
+        required: true
+      - label: "More photos (optional, up to 5)"
+        name: "gallery"
+        widget: "cloudinary_gallery"
+        required: false
+      - { label: "Description", name: "description", widget: "markdown" }
