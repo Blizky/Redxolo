@@ -1,17 +1,15 @@
 {
   "posts": [
     {
-      "title": "Welcome to RedXolo",
-      "id": "2026-02-10T12:00:00.000Z",
-      "date": "2026-02-10T12:00:00.000Z",
-      "highlighted": true,
-      "media_url": "",
+      "id": "{{now}}",
+      "date": "2026-02-11T11:31:00.000-06:00",
+      "highlighted": false,
+      "title": "Hellow World",
       "tags": [
-        "Dog",
-        "Cat"
+        "Dog"
       ],
-      "gallery": [],
-      "description": "Hi! I\u2019m glad you\u2019re here.\n\n**RedXolo Pet Transport** is built around a calm ride, careful handling, and frequent updates.\n\n- Best fit: **cats** and **small-to-medium dogs**\n- Climate-controlled vehicle\n- Regular rest stops\n- Photo/video updates\n\nIf you\u2019d like a quote, tap **Contact** and send your pickup/drop-off details."
+      "media_url": "https://res.cloudinary.com/dmcq1gb99/image/upload/v1770831126/422737-german-longhaired-pointer-782498_wgnbbj.jpg",
+      "description": "Test image of this brown dog sitting on the grass."
     }
   ]
 }
