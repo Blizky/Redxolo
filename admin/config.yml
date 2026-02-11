@@ -27,12 +27,35 @@ collections:
           - label: "Posts"
             name: "posts"
             widget: "list"
-            summary: "{{fields.date}} — {{fields.highlighted}} — {{fields.title}}"
+            summary: "{{fields.date}} — {{fields.highlighted}} — {{fields.tags}} — {{fields.title}}"
             fields:
+              - label: "ID"
+                name: "id"
+                widget: "hidden"
+                default: "{{now}}"
               - { label: "Title", name: "title", widget: "string" }
-              - { label: "Slug", name: "slug", widget: "string", hint: "Unique id (example: tx-to-al-2026-02-10)" }
-              - { label: "Date", name: "date", widget: "datetime" }
+              - label: "Date"
+                name: "date"
+                widget: "datetime"
+                default: "{{now}}"
+                hint: "Displayed on the website in Central Time (CT). You can edit this for older/newer posts."
               - { label: "Highlighted", name: "highlighted", widget: "boolean", default: false }
-              - { label: "Media", name: "media_url", widget: "file", required: false, hint: "Upload/select an image or video" }
-              - { label: "Media Type", name: "media_type", widget: "select", options: ["image", "video"], default: "image" }
+              - label: "Tags"
+                name: "tags"
+                widget: "select"
+                multiple: true
+                options: ["Dog", "Cat"]
+                required: false
+              - label: "Media (required)"
+                name: "media_url"
+                widget: "file"
+                required: true
+                hint: "Upload/select 1 file. iPhone HEIC is OK (Cloudinary will optimize delivery). Videos should be MP4."
+              - label: "More photos (optional, up to 5)"
+                name: "gallery"
+                widget: "list"
+                required: false
+                max: 5
+                hint: "Optional extra JPG photos (up to 5)."
+                field: { label: "Photo", name: "image", widget: "image" }
               - { label: "Description", name: "description", widget: "markdown" }

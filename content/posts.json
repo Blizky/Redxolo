@@ -2,11 +2,15 @@
   "posts": [
     {
       "title": "Welcome to RedXolo",
-      "slug": "welcome",
+      "id": "2026-02-10T12:00:00.000Z",
       "date": "2026-02-10T12:00:00.000Z",
       "highlighted": true,
       "media_url": "",
-      "media_type": "image",
+      "tags": [
+        "Dog",
+        "Cat"
+      ],
+      "gallery": [],
       "description": "Hi! I\u2019m glad you\u2019re here.\n\n**RedXolo Pet Transport** is built around a calm ride, careful handling, and frequent updates.\n\n- Best fit: **cats** and **small-to-medium dogs**\n- Climate-controlled vehicle\n- Regular rest stops\n- Photo/video updates\n\nIf you\u2019d like a quote, tap **Contact** and send your pickup/drop-off details."
     }
   ]
