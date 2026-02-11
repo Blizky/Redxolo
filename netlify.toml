@@ -3,6 +3,21 @@
   functions = "netlify/functions"
   command = "node scripts/build-posts.mjs"
 
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
