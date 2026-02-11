@@ -74,8 +74,7 @@ import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
       });
     }
 
-    await writeFile(OUT_FILE, JSON.stringify({ posts }, null, 2) + '
-', 'utf8');
+    await writeFile(OUT_FILE, JSON.stringify({ posts }, null, 2) + '\n', 'utf8');
     console.log(`Wrote ${posts.length} posts to content/posts.json`);
   }
 
