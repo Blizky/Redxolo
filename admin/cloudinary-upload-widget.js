@@ -1,16 +1,8 @@
 (function () {
-  function getCloudinaryConfig() {
-    return fetch('/admin/config.yml', { cache: 'no-store' })
-      .then((r) => (r.ok ? r.text() : ''))
-      .then((text) => {
-        const cloudNameMatch = text.match(/^\s*cloud_name:\s*([^\s#]+)\s*$/m);
-        const presetMatch = text.match(/^\s*upload_preset:\s*([^\s#]+)\s*$/m);
-        const cloud_name = cloudNameMatch ? cloudNameMatch[1].trim() : '';
-        const upload_preset = presetMatch ? presetMatch[1].trim() : '';
-        return { cloud_name, upload_preset };
-      })
-      .catch(() => ({ cloud_name: '', upload_preset: '' }));
-  }
+  // Public config for unsigned uploads (safe to ship to the browser).
+  // Keep in sync with your Cloudinary account / upload preset.
+  const CLOUDINARY_CLOUD_NAME = 'dmcq1gb99';
+  const CLOUDINARY_UPLOAD_PRESET = 'redxolo';
 
   function makeButtonStyle(variant) {
     const base = {
@@ -222,11 +214,5 @@
 
   if (!window.CMS) return;
 
-  getCloudinaryConfig().then((cfg) => {
-    if (!cfg.cloud_name || !cfg.upload_preset) {
-      console.warn('[RedXolo] Missing cloud_name/upload_preset in /admin/config.yml');
-      return;
-    }
-    registerWidgets(window.CMS, cfg);
-  });
+  registerWidgets(window.CMS, { cloud_name: CLOUDINARY_CLOUD_NAME, upload_preset: CLOUDINARY_UPLOAD_PRESET });
 })();
