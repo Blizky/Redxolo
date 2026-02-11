@@ -594,7 +594,7 @@ async function loadPosts() {
 
   let data;
   try {
-    const res = await fetch('/content/posts.json', { cache: 'no-cache' });
+    const res = await fetch(new URL('content/posts.json', document.baseURI), { cache: 'no-cache' });
     if (!res.ok) throw new Error('Failed to load posts');
     data = await res.json();
   } catch (err) {

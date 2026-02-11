@@ -23,7 +23,7 @@ async function loadPosts() {
 
   let data;
   try {
-    const res = await fetch('/content/posts.json', { cache: 'no-cache' });
+    const res = await fetch(new URL('content/posts.json', document.baseURI), { cache: 'no-cache' });
     if (!res.ok) throw new Error('Failed to load posts');
     data = await res.json();
   } catch (err) {
@@ -59,7 +59,7 @@ async function loadPosts() {
     const cover = p.cover ? `<img class="post-cover" src="${escapeHtml(p.cover)}" alt="" loading="lazy" />` : '';
 
     return `
-      <a class="card post-card" href="/blog/post.html?slug=${slug}">
+      <a class="card post-card" href="blog/post.html?slug=${slug}">
         ${cover}
         <div class="meta">${escapeHtml(date)}</div>
         <div class="title">${title}</div>

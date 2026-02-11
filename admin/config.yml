@@ -6,7 +6,7 @@ backend:
 repo: Blizky/Redxolo
 
 media_folder: "uploads"
-public_folder: "/uploads"
+public_folder: "uploads"
 
 local_backend: false
 
