@@ -8,9 +8,6 @@ repo: Blizky/Redxolo
 media_folder: "uploads"
 public_folder: "/uploads"
 
-media_library:
-  name: "upload"
-
 local_backend: false
 
 collections:
