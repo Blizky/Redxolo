@@ -19,9 +19,8 @@ Simple static site (no build tools) with a cute landing page + an Instagram-styl
 3) Enable **Identity** + **Git Gateway** (Identity → Settings).
 4) In `admin/config.yml`:
    - Set `repo: YOUR_GITHUB_USERNAME/Redxolo`
-   - Set `media_library.config.cloud_name` + `media_library.config.api_key`
 5) Visit `/admin/` on your Netlify domain, invite yourself, log in, and post.
 
 Notes:
-- Cloudinary `api_key` is public; never put your Cloudinary API secret in this repo.
+- Uploads are stored in `uploads/` and committed via Git Gateway (so media lives on your site, not a separate service).
 - Posts are stored in `content/posts.json`.

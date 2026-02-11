@@ -23,10 +23,21 @@ import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 
   function normalizeGallery(gallery) {
     if (!Array.isArray(gallery)) return [];
-    return gallery
-      .map((u) => String(u || '').trim())
-      .filter(Boolean)
-      .slice(0, 5);
+    const out = [];
+    for (const item of gallery) {
+      if (!item) continue;
+      if (typeof item === 'string') {
+        const v = item.trim();
+        if (v) out.push(v);
+        continue;
+      }
+      if (typeof item === 'object') {
+        const v = typeof item.image === 'string' ? item.image.trim() : '';
+        if (v) out.push(v);
+      }
+      if (out.length >= 5) break;
+    }
+    return out;
   }
 
   function ensureId(post) {

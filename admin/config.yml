@@ -39,11 +39,12 @@ collections:
         required: false
       - label: "Media (required)"
         name: "media_url"
-        widget: "cloudinary_media"
-        resource_type: "auto"
+        widget: "file"
         required: true
       - label: "More photos (optional, up to 5)"
         name: "gallery"
-        widget: "cloudinary_gallery"
+        widget: "list"
+        max: 5
+        field: { label: "Photo", name: "image", widget: "image", required: false }
         required: false
       - { label: "Description", name: "description", widget: "markdown" }

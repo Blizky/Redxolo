@@ -210,10 +210,13 @@ function makeCard(post, state, { large = false } = {}) {
   const stacked = gallery.length > 0 && !isVideo(post.media_url);
   const desc = String(post.description || '').replace(/\s+/g, ' ').trim();
   const date = formatDateTimeCT(post.date);
+  const title = String(post.title || '').trim();
+  const isNarrow = typeof window.matchMedia === 'function' ? window.matchMedia('(max-width: 740px)').matches : false;
+  const ratio = isNarrow ? '9 / 16' : large ? '16 / 10' : '4 / 5';
 
   return `
     <article class="post-card" data-open="${escapeHtml(pid)}" aria-label="Open post">
-      <div class="post-media ${stacked ? 'stacked' : ''}" style="aspect-ratio:${large ? '16 / 10' : '4 / 5'};">
+      <div class="post-media ${stacked ? 'stacked' : ''}" style="aspect-ratio:${ratio};">
         ${buildMedia(post.media_url, { mode: 'card' })}
       </div>
       <div class="post-actions">
@@ -224,6 +227,8 @@ function makeCard(post, state, { large = false } = {}) {
       </div>
       <div class="post-body">
         <div class="post-meta">${escapeHtml(date)}</div>
+        ${title ? `<div class="post-title">${escapeHtml(title)}</div>` : ''}
+        ${tagPillsHtml(post.tags)}
         <div class="post-desc">${escapeHtml(desc).slice(0, 160)}${desc.length > 160 ? '…' : ''}</div>
       </div>
     </article>
@@ -246,6 +251,29 @@ function getAllTags(posts) {
   for (const t of preferred) if (set.has(t)) out.push(t);
   for (const t of Array.from(set).sort()) if (!preferred.includes(t)) out.push(t);
   return out;
+}
+
+function normalizeForSearch(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[\u2019]/g, "'")
+    .replace(/[^a-z0-9\s#@._-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function postMatchesQuery(post, query) {
+  const q = normalizeForSearch(query);
+  if (!q) return true;
+
+  const tokens = q.split(' ').filter(Boolean).slice(0, 8);
+  if (!tokens.length) return true;
+
+  const hay = normalizeForSearch(
+    [post?.title || '', post?.description || '', Array.isArray(post?.tags) ? post.tags.join(' ') : ''].join(' '),
+  );
+
+  return tokens.every((t) => hay.includes(t));
 }
 
 function renderFilters(state) {
@@ -273,9 +301,28 @@ function renderFilters(state) {
 }
 
 function getFilteredPosts(state) {
-  if (!state.filterTag || state.filterTag === 'All') return state.posts;
-  const wanted = String(state.filterTag);
-  return state.posts.filter((p) => Array.isArray(p.tags) && p.tags.map(String).includes(wanted));
+  let out = state.posts;
+
+  if (state.filterTag && state.filterTag !== 'All') {
+    const wanted = String(state.filterTag);
+    out = out.filter((p) => Array.isArray(p.tags) && p.tags.map(String).includes(wanted));
+  }
+
+  if (state.searchQuery) {
+    out = out.filter((p) => postMatchesQuery(p, state.searchQuery));
+  }
+
+  return out;
+}
+
+function tagPillsHtml(tags) {
+  if (!Array.isArray(tags) || tags.length === 0) return '';
+  const safe = tags
+    .map((t) => String(t || '').trim())
+    .filter(Boolean)
+    .slice(0, 12);
+  if (!safe.length) return '';
+  return `<div class="post-tags" aria-label="Tags">${safe.map((t) => `<span class="tag-pill">${escapeHtml(t)}</span>`).join('')}</div>`;
 }
 
 function renderCarousel(state) {
@@ -284,17 +331,27 @@ function renderCarousel(state) {
 
   const posts = getFilteredPosts(state);
   const highlighted = posts.find((p) => p && p.highlighted === true) || posts[0];
-  const rest = posts.filter((p) => p !== highlighted).slice(0, 4);
+  const ordered = highlighted ? [highlighted, ...posts.filter((p) => p !== highlighted)] : posts;
 
-  if (!highlighted) {
-    wrap.innerHTML = `<div class="card"><h3>No posts yet</h3><p>Add posts in Admin and they’ll show up here.</p></div>`;
+  if (!ordered.length) {
+    const hasFilters = (state.filterTag && state.filterTag !== 'All') || Boolean(state.searchQuery);
+    wrap.innerHTML = hasFilters
+      ? `<div class="card"><h3>No matches</h3><p>Try clearing the search or selecting “All”.</p></div>`
+      : `<div class="card"><h3>No posts yet</h3><p>Add posts in Admin and they’ll show up here.</p></div>`;
     return;
   }
 
-  wrap.innerHTML = [
-    `<div style="grid-column: span 2; min-width: min(720px, 92vw);">${makeCard(highlighted, state, { large: true })}</div>`,
-    ...rest.map((p) => makeCard(p, state)),
-  ].join('');
+  const isWide = typeof window.matchMedia === 'function' ? window.matchMedia('(min-width: 941px)').matches : true;
+
+  if (isWide && highlighted) {
+    wrap.innerHTML = [
+      `<div class="highlight-wrap">${makeCard(highlighted, state, { large: true })}</div>`,
+      ...ordered.slice(1).map((p) => makeCard(p, state)),
+    ].join('');
+    return;
+  }
+
+  wrap.innerHTML = ordered.map((p) => makeCard(p, state)).join('');
 }
 
 function updateLikeUI(pid, state) {
@@ -377,7 +434,16 @@ function wireInteractions(state) {
 
     renderModalMedia();
 
-    if (metaEl) metaEl.textContent = formatDateTimeCT(post.date);
+    if (metaEl) {
+      const title = String(post.title || '').trim();
+      const date = formatDateTimeCT(post.date);
+      const tags = Array.isArray(post.tags) ? post.tags.map((t) => String(t || '').trim()).filter(Boolean).slice(0, 12) : [];
+      metaEl.innerHTML = [
+        title ? `<div style="font-weight: 950; letter-spacing: -0.2px; font-size: 16px;">${escapeHtml(title)}</div>` : '',
+        date ? `<div style="margin-top: 2px; opacity: 0.85;">${escapeHtml(date)}</div>` : '',
+        tags.length ? `<div style="margin-top: 8px; display:flex; flex-wrap:wrap; gap:8px;">${tags.map((t) => `<span style="padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.10); font-weight: 900; font-size: 12px;">${escapeHtml(t)}</span>`).join('')}</div>` : '',
+      ].join('');
+    }
     if (descEl) descEl.innerHTML = markdownToHtml(post.description);
 
     if (likeBtn) {
@@ -506,8 +572,22 @@ function wireInteractions(state) {
   }
 }
 
+function wireSearch(state) {
+  const input = document.getElementById('postSearch');
+  if (!input) return;
+
+  let t;
+  input.addEventListener('input', () => {
+    window.clearTimeout(t);
+    t = window.setTimeout(() => {
+      state.searchQuery = String(input.value || '').trim();
+      renderCarousel(state);
+    }, 80);
+  });
+}
+
 async function loadPosts() {
-  const state = { posts: [], likes: {}, filterTag: 'All' };
+  const state = { posts: [], likes: {}, filterTag: 'All', searchQuery: '' };
 
   const wrap = document.getElementById('postsCarousel');
   if (!wrap) return;
@@ -534,6 +614,7 @@ async function loadPosts() {
 
   renderFilters(state);
   renderCarousel(state);
+  wireSearch(state);
   wireInteractions(state);
 
   const displayIds = ids.slice(0, 12);
